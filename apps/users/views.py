@@ -6,9 +6,40 @@ from django.shortcuts import render
 from django.contrib.auth.backends import ModelBackend
 from django.views.generic.base import View
 
-from forms import LoginForm, RegisterForm, ForgetPwdForm
+from forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
 from utils.email_send import send_register_email
 from .models import UserProfile, EmailVerifyRecord
+
+
+class ResetView(View):  # 处理修改密码链接
+    def get(self, request, reset_code):
+        all_records = EmailVerifyRecord.objects.filter(code=reset_code)
+        if all_records:
+            for record in all_records:
+                email = record.email
+                return render(request, "pwd_reset.html", {"email": email})
+        else:
+            return render(request, "active_fail.html")
+        return render(request, "login.html")
+
+
+class ModifyPwdView(View):
+    def post(self, request): # 处理用户提交业务逻辑
+        # 首先实例化form表单对象
+        modify_form = ModifyPwdForm(request.POST)
+        if modify_form.is_valid():
+            pwd1 = request.POST.get("password1", "")
+            pwd2 = request.POST.get("password2", "")
+            email = request.POST.get("email", "")
+            if pwd1 != pwd2:
+                return render(request, "pwd_reset.html", {"email":email, "msg": "两次密码不一致，请重新输入"})
+            user = UserProfile.objects.get(email=email)
+            user.password = make_password(pwd2)
+            user.save()
+            return render(request, "login.html")
+        else:
+            email = request.POST.get("email", "")
+            return render(request, "pwd_reset.html", {"email":email, "modify_form": modify_form})
 
 
 class ForgetView(View):
@@ -23,7 +54,7 @@ class ForgetView(View):
             send_register_email(email, "forget")
             return render(request, "send_success.html")
         else:
-            return render(request, "forgetpwd.html", {"forgetpwd_form": forget_form})
+            return render(request, "forgetpwd.html", {"forgetpwd_form": forget_form, "msg": "请重新输入验证码"})
 
 
 class ActiveUserView(View):     #邮箱验证码激活

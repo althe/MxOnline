@@ -15,6 +15,12 @@ class RegisterForm(forms.Form):
     password = forms.CharField(required=True, min_length=5)
     captcha = CaptchaField(error_messages={"invalid":u"验证码错误"})
 
+
 class ForgetPwdForm(forms.Form):
     email = forms.EmailField(required=True)
     captcha = CaptchaField(error_messages={"invalid": u"验证码错误"})
+
+
+class ModifyPwdForm(forms.Form):
+    password1 = forms.CharField(required=True, min_length=5)  # 此处名称一定要和页面输入框name保持一致，不然会报null-inputerror
+    password2 = forms.CharField(required=True, min_length=5)

@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'organization',
     'xadmin',
     'crispy_forms',
-    'captcha'
+    'captcha',
+    'pure_pagination'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.media',
             ],
         },
     },
@@ -148,3 +150,6 @@ EMAIL_HOST_USER = "zhezhe5201314@126.com"
 EMAIL_HOST_PASSWORD = "ymz1988"
 EMAIL_USE_TLS = False
 EMAIL_FROM = "zhezhe5201314@126.com"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

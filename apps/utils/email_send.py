@@ -36,7 +36,7 @@ def send_register_email(email, send_type="register"):
         if send_status:
             pass
 
-    elif send_type == "forget_pwd":
+    elif send_type == "forget":
         email_title = "哲商在线网找回密码链接"
         email_body = "请点击下面的链接重设你的密码： http://127.0.0.1:8000/reset/{0}".format(code)
 
