@@ -34,3 +34,15 @@ class CourseListView(View):
         return render(request, "course_list.html", {'all_courses': courses,
                                                     'sort': sort,
                                                     'hot_courses': hot_courses})
+
+
+class CourseDetailView(View):
+    def get(self, request, course_id): # 此处接收的 course_id 是url里面配置的正则接收参过来的
+        # course = request.POST.get(id= int(course_id))   注意：此处拿到课程id之后应该去数据库拿课程对象
+        course = Course.objects.get(id=int(course_id))
+
+        # 统计课程点击数
+        course.click_nums += 1
+        course.save()
+        #user_course = Course.get_studyUsers()   # 获取学习用户 为什么不写在view里面
+        return render(request, 'course_detail.html', {"course": course,})
