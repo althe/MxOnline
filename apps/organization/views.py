@@ -101,8 +101,8 @@ class OrgCourseView(View):
 
         return render(request, 'org_detail_course.html', {'course_org':course_org,
                                                             'all_courses':all_courses,
-                                                          'current_page': current_page,
-                                                          'has_fav': has_fav})
+                                                            'current_page': current_page,
+                                                            'has_fav': has_fav})
 
 
 class OrgDescView(View):
