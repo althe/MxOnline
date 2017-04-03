@@ -77,7 +77,7 @@ class CourseInfoView(LoginRequiredMixin, View):
         user_courses = UserCourse.objects.filter(course=course)
         all_students_ids = [user_course.user.id for user_course in user_courses]
         all_user_courses = UserCourse.objects.filter(user_id__in=all_students_ids) # 用户查看课程对象
-
+        # 推荐逻辑有待完善
         all_user_courses_id = [all_course.course.id for all_course in all_user_courses]
         relate_courses = Course.objects.filter(course_org_id__in=all_user_courses_id).order_by('-click_nums')[:5] # 相关用户看过的其他课程对象
         all_resource = courseResource.objects.filter(course=course)
