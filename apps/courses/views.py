@@ -6,13 +6,18 @@ from django.views.generic import View
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from operation.models import UserFavorite, CourseComments, UserCourse
-from .models import Course, courseResource
+from .models import Course, courseResource, Video
 from utils.mixin_util import LoginRequiredMixin
+from django.db.models import Q
 
 
 class CourseListView(View):
     def get(self, request):
         org_courses = Course.objects.all().order_by('-add_time') # 默认按添加时间排序
+
+        key_words = request.GET.get('keywords', '')
+        if key_words:                              # icontains表示不区分大小写
+            org_courses = org_courses.filter(Q(name__icontains=key_words)|Q(desc__icontains=key_words)|Q(detail__icontains=key_words))
 
         # 热门课程
         hot_courses = org_courses.order_by('-click_nums')[:3]
@@ -72,6 +77,13 @@ class CourseInfoView(LoginRequiredMixin, View):
     def get(self, request, course_id):
         # 返回单个课程详情
         course = Course.objects.get(id=int(course_id))
+
+        # 用户和课程关系处理:如果该用户之前没看过当前课程，则添加关系记录
+        user_courses = UserCourse.objects.filter(user=request.user, course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            user_course.save()
+
         # 返回学过当前课程的同学还学过哪些其他课程
         # 原理就是先拿到学过当前课程的所有学员id，然后拿到这些学员所学所有课程id,然后返回这些课程点击量最大的5个用来推荐
         user_courses = UserCourse.objects.filter(course=course)
@@ -121,3 +133,28 @@ class AddCommentView(View): # 此处为什么不写进一个类？因为响应�
             return HttpResponse('{"fail":"success", "msg":"评论失败"}', content_type="application/json")
 
 
+class CoursePlayView(View):
+    def get(self, request, video_id):
+        # 返回单个课程详情
+        video = Video.objects.get(id=int(video_id))
+        course = video.lesson.course
+
+        # 用户和课程关系处理:如果该用户之前没看过当前课程，则添加关系记录
+        user_courses = UserCourse.objects.filter(user=request.user, course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            user_course.save()
+
+        # 返回学过当前课程的同学还学过哪些其他课程
+        # 原理就是先拿到学过当前课程的所有学员id，然后拿到这些学员所学所有课程id,然后返回这些课程点击量最大的5个用来推荐
+        user_courses = UserCourse.objects.filter(course=course)
+        all_students_ids = [user_course.user.id for user_course in user_courses]
+        all_user_courses = UserCourse.objects.filter(user_id__in=all_students_ids) # 用户查看课程对象
+        # 推荐逻辑有待完善
+        all_user_courses_id = [all_course.course.id for all_course in all_user_courses]
+        relate_courses = Course.objects.filter(course_org_id__in=all_user_courses_id).order_by('-click_nums')[:5] # 相关用户看过的其他课程对象
+        all_resource = courseResource.objects.filter(course=course)
+        return render(request, 'course_play.html', {'course': course,
+                                                     'video': video,
+                                                     'relate_courses': relate_courses,
+                                                     'all_resource': all_resource})

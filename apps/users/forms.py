@@ -4,6 +4,7 @@ __date__ = '2017/2/7 21:19'
 
 from django import forms
 from captcha.fields import CaptchaField
+from .models import UserProfile
 
 class LoginForm(forms.Form):
     username = forms.CharField(required=True)
@@ -24,3 +25,9 @@ class ForgetPwdForm(forms.Form):
 class ModifyPwdForm(forms.Form):
     password1 = forms.CharField(required=True, min_length=5)  # 此处名称一定要和页面输入框name保持一致，不然会报null-inputerror
     password2 = forms.CharField(required=True, min_length=5)
+
+
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['image']

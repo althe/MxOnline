@@ -2,13 +2,16 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.backends import ModelBackend
 from django.views.generic.base import View
 
-from forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
+from forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UploadImageForm
 from utils.email_send import send_register_email
+from utils.mixin_util import LoginRequiredMixin
 from .models import UserProfile, EmailVerifyRecord
+import json
 
 
 class ResetView(View):  # 处理修改密码链接
@@ -129,15 +132,21 @@ class CustomBackend(ModelBackend):
             return None
 
 
-# def user_login(request):
-#     if request.method == "POST":
-#         user_name = request.POST.get("username", "")
-#         pass_word = request.POST.get("password", "")
-#         user = authenticate(username=user_name, password=pass_word)
-#         if user is not None:
-#             login(request, user)
-#             return render(request, 'index.html')
-#         else:
-#             return render(request, 'login.html', {"msg":"账号或者密码错误！"})
-#     elif request.method == "GET":
-#         return render(request, "login.html", {})
+class UserCenterView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'usercenter_info.html', {})
+
+
+class UploadImageView(LoginRequiredMixin, View):
+    def post(self, request):
+        imageForm = UploadImageForm(request.POST, request.FILES, instance=request.user)
+        res = {}
+        if imageForm.is_valid():
+            imageForm.save()
+            res['status'] = 'success'
+            res['msg'] = '头像修改成功！'
+        else:
+            res['status'] = 'fail'
+            res['msg'] = '头像修改失败！'
+        return HttpResponse(json.dumps(res), content_type='application/json')
+

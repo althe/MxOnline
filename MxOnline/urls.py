@@ -20,7 +20,10 @@ urlpatterns = [
 
     # 课程机构首页
     url(r'^org/', include('organization.urls', namespace="org")), # 命名空间用于区分
+    # 课程详情首页
     url(r'^course/', include('courses.urls', namespace="course")),
+    # 用户信息首页
+    url(r'^users/', include('users.urls', namespace="users")),
     # 配置上传文件的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}), # 机构logo路径配置
 
