@@ -45,12 +45,12 @@
                             <i class="error-tips"></i>
                         </li>
 						<li>生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日：
-                           <input type="text" id="birth_day" name="birday" value="{{ request.user.birthday|default_if_none:'' }}" readonly="readonly"/>
+                           <input type="text" id="birth_day" name="birthday" value="{{ request.user.birthday|default_if_none:'' }}" readonly="readonly"/>
                             <i class="error-tips"></i>
 						</li>
 						<li>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：
-							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  name="gender" value="male" {% if request.user.sex == 'male' %}checked="checked"{% endif %}>男</label>
-							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="gender" value="female" {% if request.user.sex == 'female' %}checked="checked"{% endif %}>女</label>
+							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  name="sex" value="male" {% if request.user.sex == 'male' %}checked="checked"{% endif %}>男</label>
+							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="sex" value="female" {% if request.user.sex == 'female' %}checked="checked"{% endif %}>女</label>
 						</li>
 						<li class="p_infor_city">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：
                             <input type="text" name="address" id="address" placeholder="请输入你的地址" value="{{ request.user.address }}" maxlength="10">
@@ -67,7 +67,7 @@
 							<input type="button" id="jsEditUserBtn" value="保存">
 						</li>
 					</ul>
-                    <input type='hidden' name='csrfmiddlewaretoken' value='799Y6iPeEDNSGvrTu3noBrO4MBLv6enY' />
+                    {% csrf_token %}
 				</form>
 			</div>
 		</div>

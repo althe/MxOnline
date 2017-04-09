@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.contrib.auth.backends import ModelBackend
 from django.views.generic.base import View
 
-from forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UploadImageForm
+from forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UploadImageForm, UpdateUserInfoForm
 from utils.email_send import send_register_email
 from utils.mixin_util import LoginRequiredMixin
 from .models import UserProfile, EmailVerifyRecord
@@ -136,6 +136,14 @@ class UserCenterView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'usercenter_info.html', {})
 
+    def post(self, request):
+        userInfoForm = UpdateUserInfoForm(request.POST, instance=request.user)# 指明当前用户，否则会新建一个用户
+        if userInfoForm.is_valid():
+            userInfoForm.save()
+            return HttpResponse('{"status": "success"}', content_type='application/json')
+        else:
+            return HttpResponse(json.dumps(userInfoForm.errors), content_type='application/json')
+
 
 class UploadImageView(LoginRequiredMixin, View):
     def post(self, request):
@@ -151,7 +159,7 @@ class UploadImageView(LoginRequiredMixin, View):
         return HttpResponse(json.dumps(res), content_type='application/json')
 
 
-class UpdatePwdView(View):
+class UpdatePwdView(LoginRequiredMixin, View):
     def post(self, request):
 
         modify_form = ModifyPwdForm(request.POST)
@@ -163,6 +171,38 @@ class UpdatePwdView(View):
             user = request.user
             user.password = make_password(pwd2)
             user.save()
-            return HttpResponse('{"status":"success", "msg": "修改密码成功"}', content_type='application/json')
+            return HttpResponse('{"status":"success"}', content_type='application/json')
         else:
             return HttpResponse(json.dumps(modify_form.errors), content_type='application/json')
+
+
+class SendEmailCodeView(LoginRequiredMixin, View):
+    def get(self, request):
+        email = request.GET.get('email', '')
+        # 首先拿到新输入的邮箱，并去数据库查询是否重复
+        # 如果不是重复的，则向该邮箱发送验证码
+        if UserProfile.objects.filter(email=email):
+            return HttpResponse('{"email": "邮箱已存在！"}', content_type='application/json')
+
+        send_register_email(email, "update_email")
+        return HttpResponse('{"status": "success"}', content_type='application/json')
+
+
+class UpdateEmailView(LoginRequiredMixin, View):
+    def post(self, request):
+        '''
+        思路：拿到对应的邮箱地址和发送的验证码，并去数据库检查是否有对应的记录
+        如果有，则对用用户进行update操作，如果没有则返回出错消息，前端就会显示错误。
+        '''
+        Email = request.POST.get('email', '')
+        code = request.POST.get('code', '')
+        exist_code = EmailVerifyRecord.objects.filter(email=Email, code=code)
+        if exist_code:
+            user = request.user
+            user.email = Email
+            user.save()
+            return HttpResponse('{"status": "success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"email": "验证码出错"}', content_type='application/json')
+
+
