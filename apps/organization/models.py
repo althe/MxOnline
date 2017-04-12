@@ -62,5 +62,8 @@ class Teacher(models.Model):
     def __unicode__(self):
         return self.name
 
+    def getCourseNum(self):
+        return self.course_set.all().count()
+
 
 

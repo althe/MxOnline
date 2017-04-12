@@ -41,12 +41,12 @@
                                 </dl>
                                 <div class="btn">
 	                                <a class="personcenter fl" href="{% url 'users:info' %}">进入个人中心</a>
-	                                <a class="fr" href="/logout/">退出</a>
+	                                <a class="fr" href="{% url 'logout' %}">退出</a>
                                 </div>
                             </div>
                         </div>
                         <a href="usercenter-message.html">
-                            <div class="msg-num"><span id="MsgNum">0</span></div>
+                            <div class="msg-num"><span id="MsgNum">{{ request.user.unread_num|default_if_none:'' }}</span></div>
                         </a>
                     {% else %}
                     <div>
@@ -57,12 +57,24 @@
 				</div>
 
             </div>
-        </div>
 
             <div class="middle">
                 <div class="wp">
-                    <a href="{% url 'index' %}"><img class="fl" src="{% static 'images/logo2.png' %}"/></a>
-                    <h1>我的SOTON</h1>
+                    <a href="index.html"><img class="fl" src="{% static 'images/logo.jpg' %}"/></a>
+                    <div class="searchbox fr">
+                        <div class="selectContainer fl">
+                            <span class="selectOption" id="jsSelectOption" data-value="course">
+                                公开课
+                            </span>
+                            <ul class="selectMenu" id="jsSelectMenu">
+                                <li data-value="course">公开课</li>
+                                <li data-value="org">课程机构</li>
+                                <li data-value="teacher">授课老师</li>
+                            </ul>
+                        </div>
+                        <input id="search_keywords" class="fl" type="text" value="" placeholder="请输入搜索内容"/>
+                        <img class="search_btn fr" id="jsSearchBtn" src="{% static 'images/search_btn.png' %}"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,11 +91,11 @@
 	<div class="wp list personal_list">
 	<div class="left">
         <ul>
-            <li class="active2"><a href="usercenter-info.html">个人资料</a></li>
-            <li ><a href="usercenter-mycourse.html">我的课程</a></li>
-            <li ><a href="usercenter-fav-course.html">我的收藏</a></li>
+            <li class="active2"><a href="{% url 'users:info' %}">个人资料</a></li>
+            <li ><a href="{% url 'users:mycourse' %}">我的课程</a></li>
+            <li ><a href="{% url 'users:myFavcourse' %}">我的收藏</a></li>
             <li >
-                <a href="usercenter-message.html" style="position: relative;">
+                <a href="{% url 'users:mymessage' %}" style="position: relative;">
                     我的消息
                 </a>
             </li>
@@ -150,7 +162,6 @@
                 <div class="button">
                     <input id="jsResetPwdBtn" type="button" value="提交" />
                 </div>
-                <input type='hidden' name='csrfmiddlewaretoken' value='DaP7IUKm9FA9nELA9YUlYYWpyIDdCiIP' />
                 {% csrf_token %}
             </form>
         </div>
@@ -209,7 +220,6 @@
                 <input type="hidden" name="mobile" id="jsInpResetMobil" />
                 <input id="jsSetNewPwdBtn" type="button" value="提交" />
             </div>
-            <input type='hidden' name='csrfmiddlewaretoken' value='DaP7IUKm9FA9nELA9YUlYYWpyIDdCiIP' />
             {% csrf_token %}
         </form>
     </div>

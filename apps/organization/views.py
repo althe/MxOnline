@@ -164,6 +164,26 @@ class AddFavView(View):
         if exit_records:
             # 如果已经存在，则表示用户想取消收藏
             exit_records.delete()
+            # 用户取消收藏数减少操作
+            if fav_type == 1:
+                course = Course.objects.get(id=int(fav_id))
+                course.fav_nums -= 1
+                if course.fav_nums < 0:
+                    course.fav_nums = 0
+                course.save()
+            elif fav_type == 2:
+                course_org = CourseOrg.objects.get(id=int(fav_id))
+                course_org.fav_nums -= 1
+                if course_org.fav_nums < 0:
+                    course_org.fav_nums = 0
+                    course_org.save()
+            elif fav_type == 3:
+                teacher = Teacher.objects.get(id=int(fav_id))
+                teacher.fav_nums -= 1
+                if teacher.fav_nums < 0:
+                    teacher.fav_nums = 0
+                    teacher.save()
+
             return HttpResponse('{"status":"success", "msg":"收藏"}', content_type="application/json")
         else:
             fav_user = UserFavorite()
@@ -172,6 +192,21 @@ class AddFavView(View):
                 fav_user.fav_type = int(fav_type)
                 fav_user.fav_id = int(fav_id)
                 fav_user.save()
+
+            # 用户添加收藏数累加逻辑
+            if fav_type == 1:
+                course = Course.objects.get(id=int(fav_id))
+                course.fav_nums += 1
+                course.save()
+            elif fav_type == 2:
+                course_org = CourseOrg.objects.get(id=int(fav_id))
+                course_org.fav_nums += 1
+                course_org.save()
+            elif fav_type == 3:
+                teacher = Teacher.objects.get(id=int(fav_id))
+                teacher.fav_nums += 1
+                teacher.save()
+
                 return HttpResponse('{"status":"success", "msg":"已收藏"}', content_type="application/json")
             else:
                 pass
