@@ -174,7 +174,6 @@ class AddFavView(View):
                 fav_user.save()
                 return HttpResponse('{"status":"success", "msg":"已收藏"}', content_type="application/json")
             else:
-                pass
                 return HttpResponse('{"status":"fail", "msg":"收藏出错"}', content_type="application/json")
 
 
