@@ -47,14 +47,13 @@ class OrgView(View):
 
         p = Paginator(all_orgs, 2, request=request)
         orgs = p.page(page)
-        return render(request, "org_list.html", {'all_citys': all_citys,
-                                                 'all_orgs': orgs,
-                                                 'org_nums': org_nums,
-                                                 'city_id': city_id,
-                                                 'category': category,
-                                                 'hot_orgs': hot_orgs,
-                                                 'sort': sort,
-                                                 })
+        return render(request, "org_list.html", {       'all_citys': all_citys,
+                                                        'all_orgs': orgs,
+                                                        'org_nums': org_nums,
+                                                        'city_id': city_id,
+                                                        'category': category,
+                                                        'hot_orgs': hot_orgs,
+                                                        'sort': sort,              })
 
 
 class AddUserAskView(View):
@@ -88,11 +87,11 @@ class OrgHomeView(View):
         all_courses = course_org.course_set.all()[:3]  # 外键可以反向拿到对应的值
         all_teachers = course_org.teacher_set.all()[:1]
 
-        return render(request, 'org_detail_homepage.html', {'course_org':course_org,
-                                                            'all_courses':all_courses,
-                                                            'all_teachers':all_teachers,
-                                                            'current_page': current_page,
-                                                            'has_fav': has_fav})
+        return render(request, 'org_detail_homepage.html', {    'course_org':course_org,
+                                                                'all_courses':all_courses,
+                                                                'all_teachers':all_teachers,
+                                                                'current_page': current_page,
+                                                                'has_fav': has_fav                 })
 
 
 class OrgCourseView(View):
@@ -108,10 +107,10 @@ class OrgCourseView(View):
                 has_fav = True
         all_courses = course_org.course_set.all()[:3]  # 外键可以反向拿到对应的值
 
-        return render(request, 'org_detail_course.html', {'course_org':course_org,
-                                                            'all_courses':all_courses,
-                                                            'current_page': current_page,
-                                                            'has_fav': has_fav})
+        return render(request, 'org_detail_course.html', {      'course_org':course_org,
+                                                                'all_courses':all_courses,
+                                                                'current_page': current_page,
+                                                                'has_fav': has_fav                  })
 
 
 class OrgDescView(View):
@@ -125,9 +124,9 @@ class OrgDescView(View):
         if request.user.is_authenticated:
             if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
                 has_fav = True
-        return render(request, 'org_detail_desc.html', {'course_org':course_org,
-                                                          'current_page': current_page,
-                                                        'has_fav': has_fav})
+        return render(request, 'org_detail_desc.html', {    'course_org':course_org,
+                                                            'current_page': current_page,
+                                                            'has_fav': has_fav              })
 
 
 class OrgTeacherView(View):
@@ -143,10 +142,10 @@ class OrgTeacherView(View):
                 has_fav = True
         all_teachers = course_org.teacher_set.all()
 
-        return render(request, 'org_detail_teacher.html', {'course_org':course_org,
-                                                            'all_teachers':all_teachers,
-                                                          'current_page': current_page,
-                                                           'has_fav': has_fav})
+        return render(request, 'org_detail_teacher.html', {     'course_org':course_org,
+                                                                'all_teachers':all_teachers,
+                                                                'current_page': current_page,
+                                                                'has_fav': has_fav                  })
 
 
 class AddFavView(View):
@@ -238,10 +237,10 @@ class TeacherListView(View):
         teachers = p.page(page)
 
         top5_teachers = all_teachers.order_by('-click_nums')[:5]
-        return render(request, 'teacher_list.html', {'teachers': teachers,
-                                                     'sort': sort,
-                                                     'teacher_nums': teacher_nums,
-                                                     'top5_teachers': top5_teachers})
+        return render(request, 'teacher_list.html', {       'teachers': teachers,
+                                                            'sort': sort,
+                                                            'teacher_nums': teacher_nums,
+                                                            'top5_teachers': top5_teachers      })
 
 
 class TeacherDetailView(View):
@@ -263,9 +262,9 @@ class TeacherDetailView(View):
         if UserFavorite.objects.filter(user=request.user, fav_id=teacher.org.id, fav_type=2):
             has_org_fav = True
 
-        return render(request, 'teacher_detail.html', {'teacher': teacher,
-                                                       'top5_teachers': top5_teachers,
-                                                       'teacher_courses': teacher_courses,
-                                                       'has_teacher_fav': has_teacher_fav,
-                                                       'has_org_fav': has_org_fav})
+        return render(request, 'teacher_detail.html', {         'teacher': teacher,
+                                                                'top5_teachers': top5_teachers,
+                                                                'teacher_courses': teacher_courses,
+                                                                'has_teacher_fav': has_teacher_fav,
+                                                                'has_org_fav': has_org_fav                  })
 
