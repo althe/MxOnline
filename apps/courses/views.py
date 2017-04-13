@@ -65,9 +65,9 @@ class CourseDetailView(View):
             if UserFavorite.objects.filter(user=request.user, fav_id=course.course_org.id, fav_type=2):
                 has_org_fav = True
 
-        return render(request, 'course_detail.html', {"course": course,
-                                                      'has_course_fav': has_course_fav,
-                                                      'has_org_fav': has_org_fav})
+        return render(request, 'course_detail.html', {      "course": course,
+                                                             'has_course_fav': has_course_fav,
+                                                             'has_org_fav': has_org_fav            })
 
 
 class CourseInfoView(LoginRequiredMixin, View):
@@ -77,6 +77,8 @@ class CourseInfoView(LoginRequiredMixin, View):
     def get(self, request, course_id):
         # 返回单个课程详情
         course = Course.objects.get(id=int(course_id))
+        course.students += 1
+        course.save()
 
         # 用户和课程关系处理:如果该用户之前没看过当前课程，则添加关系记录
         user_courses = UserCourse.objects.filter(user=request.user, course=course)
