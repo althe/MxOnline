@@ -4,7 +4,7 @@ from django.conf.urls import url, include
 from django.views.static import serve
 import xadmin
 from users.views import IndexView, LoginView, LogoutView, RegisterView, ActiveUserView, ForgetView, ResetView, ModifyPwdView
-from MxOnline.settings import MEDIA_ROOT, STATIC_ROOT
+from MxOnline.settings import MEDIA_ROOT
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^users/', include('users.urls', namespace="users")),
     # 配置上传文件的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}), # 机构logo路径配置
-    url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}), # 机构logo路径配置
+    # url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}), # 机构logo路径配置
 ]
 
 handler404 = 'users.views.page_not_found'

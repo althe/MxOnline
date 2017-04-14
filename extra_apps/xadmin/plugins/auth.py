@@ -11,12 +11,14 @@ from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from django.views.decorators.debug import sensitive_post_parameters
 from django.forms import ModelMultipleChoiceField
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from xadmin.layout import Fieldset, Main, Side, Row, FormHelper
 from xadmin.sites import site
 from xadmin.util import unquote
 from xadmin.views import BaseAdminPlugin, ModelFormAdminView, ModelAdminView, CommAdminView, csrf_protect_m
 
+from django.contrib.auth import get_user_model
+User = get_user_model() # 解决后台无法修改用户密码bug，其他版本可能已经解决
 
 ACTION_NAME = {
     'add': _('Can add %s'),
@@ -258,7 +260,7 @@ class ChangeAccountPasswordView(ChangePasswordView):
         else:
             return self.get_response()
 
-site.register_view(r'^auth/user/(.+)/password/$',
+site.register_view(r'^users/userprofile/(.+)/password/$',
                    ChangePasswordView, name='user_change_password')
 site.register_view(r'^account/password/$', ChangeAccountPasswordView,
                    name='account_password')
