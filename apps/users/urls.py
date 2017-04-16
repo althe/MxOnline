@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^mycourse/$', MyCourseView.as_view(), name="mycourse"),
     # 我收藏的课程
     url(r'^myFavcourse/$', MyFavCourseView.as_view(), name="myFavcourse"),
-    # 我收藏的课程
+    # 我收藏的机构
     url(r'^myFavorg/$', MyFavOrgView.as_view(), name="myFavorg"),
     # 我收藏的老湿
     url(r'^myFavteacher/$', myFavteacherView.as_view(), name="myFavteacher"),
