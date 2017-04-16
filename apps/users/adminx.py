@@ -26,12 +26,14 @@ class EmailVerifyRecordAdmin(object):
     list_display = ['code', 'email', 'send_type', 'send_time'] # 显示字段
     search_fields = ['code', 'email', 'send_type']             # 搜索关键字段
     list_filter = ['code', 'email', 'send_type', 'send_time']  #筛选字段
+    model_icon = 'fa fa-envelope-o'
 
 
 class BannerAdmin(object):
     list_display = ['title', 'image', 'url', 'index', 'add_time']
     search_fields = ['title', 'image', 'url', 'index']
     list_filter = ['title', 'image', 'url', 'index', 'add_time']
+    model_icon = 'fa fa-picture-o'
 
 
 # from django.contrib.auth.models import User

@@ -31,6 +31,13 @@ class Course(models.Model):
     # 获取课程章节数
     def get_zj_nums(self):
         return self.lesson_set.all().count()
+    get_zj_nums.short_description = '章节数'
+
+    # 单行跳转
+    def go_to(self):
+        from django.utils.safestring import mark_safe
+        return mark_safe('<a href="http://www.baidu.com">跳转</>')
+    go_to.short_description = '跳转'
 
     # 获取课程对应的章节信息
     def get_course_lesson(self):
@@ -42,6 +49,13 @@ class Course(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class BannerCourse(Course):
+    class Meta:
+        verbose_name = '轮播课程'
+        verbose_name_plural = verbose_name
+        proxy = True # 此参数控制不要生成表，只是为了在admin中生成不同的数据
 
 
 class Lesson(models.Model):
