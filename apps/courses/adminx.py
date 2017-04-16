@@ -39,6 +39,8 @@ class CourseAdmin(object):                                                      
     readonly_fields = ['click_nums']  # 指定只读字段
     exclude = ['fav_nums']  # 指定不可见字段
     inlines = [LessonInline, CourseResourceInLine]  # 课程管理中关联 章节 和 课程资源模块
+    style_fields = {'detail': 'ueditor'}
+    import_excel = True
 
     def queryset(self):
         qs = super(CourseAdmin, self).queryset()
@@ -52,6 +54,11 @@ class CourseAdmin(object):                                                      
             course_org = obj.course_org
             course_org.course_nums = Course.objects.filter(course_org=course_org).count()
             course_org.save()
+
+    def post(self, request, *args, **kwargs):
+        if 'excel' in request.FILES:
+            pass
+        return super(CourseAdmin, self).post(request, args, kwargs)
 
 
 class LessonAdmin(object):

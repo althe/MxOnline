@@ -13,6 +13,7 @@ urlpatterns = [
     url('^logout/$', LogoutView.as_view(), name="logout"),
     url('^register/$', RegisterView.as_view(), name="register"),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^ueditor/',include('DjangoUeditor.urls')),
     url(r'^active/(?P<active_code>.*)/$', ActiveUserView.as_view(), name="active"),
     url(r'^reset/(?P<reset_code>.*)/$', ResetView.as_view(), name="reset_pwd"),
     url(r'^forget/$', ForgetView.as_view(), name="forget_pwd"),

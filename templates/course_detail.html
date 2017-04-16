@@ -116,9 +116,9 @@
 					</ul>
 				</div>
 				<div class="tab_cont tab_cont1">
-
-					<p>&nbsp; &nbsp; {{ course.detail }}</p><p><img src="{% static 'media/courses/ueditor/aobama_20161113225044_773.png' %}" title="" alt="aobama.png"/> </p>
-
+                    {% autoescape off %}
+					{{ course.detail }}
+                    {% endautoescape %}
 				</div>
 				<div class="tab_cont tab_cont2" >
 					<div class="comment">
